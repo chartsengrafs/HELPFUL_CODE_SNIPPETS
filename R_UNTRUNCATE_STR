@@ -1,2 +1,2 @@
-#command removes trh truncation of the list
+#command removes the truncation of a large list (wide data set)
 str(dataframe, list.len=ncol(dataframe))
