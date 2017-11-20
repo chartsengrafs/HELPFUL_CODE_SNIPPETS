@@ -1,0 +1,2 @@
+--command removes trh truncation of the list
+str(dn, list.len=ncol(dn))
