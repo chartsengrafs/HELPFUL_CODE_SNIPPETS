@@ -1,0 +1,7 @@
+
+--Great for pulling meta-data about a table in POSTGRES SQL
+
+SELECT * 
+FROM _V_SYS_COLUMNS 
+WHERE 
+TABLE_NAME = 'NAME_OF_TABLE'
