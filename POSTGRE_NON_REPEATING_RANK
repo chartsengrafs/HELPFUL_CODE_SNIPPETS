@@ -1,0 +1,5 @@
+
+--similar to creating a sorted non-repeating enumeration variable in SAS
+select *
+, RANK() OVER(ORDER BY X1, random()) as ranked
+FROM TABLE
