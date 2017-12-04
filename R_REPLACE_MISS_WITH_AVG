@@ -1,0 +1,28 @@
+#These functions scan the data frame for columns with missing and replaces the NA (and aadditional conditions) 
+## with values with the AVG of that column 
+
+
+#Step 1 define the mean function where the column is
+#greater than 0 because I had replaced missings with  a (-) number
+# in English: "Run function over data frame X, for column Y
+#return the mean of X column Y where Y is greater than 0
+# and Y is not missing
+func2 <- function (x, y) {
+  
+  return(mean(x[,y][x[,y] > 0], na.rm=TRUE))
+  
+}
+
+
+#Step 2 - apply to  Multiple Columns
+#Using the specialized mean function above 
+# 1 "col in colnames" returns a nmeric representation of all the column names in datset
+# 2 the bracket specifies a subset and then I create a vector of all the colnumbers I want used
+# 3 Then a function { specifies "where column is less than 0 (can be changed/extended) or column is missing
+#...USE the predefined function on all columns and write replace 
+#those values with the mean, otherwise keep it as is }
+#if else action within the function is the replacement operation
+
+for(col in colnames(rFrameTest)[c(10, 11)]){
+  rFrameTest[,col] <- ifelse(is.na(rFrameTest[,col]) | rFrameTest[,col] < 0 ,func2(rFrameTest,col),rFrameTest[,col])
+}
