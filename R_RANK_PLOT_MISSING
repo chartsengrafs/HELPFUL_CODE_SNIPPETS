@@ -1,0 +1,18 @@
+
+#This is a greate little peice of code that produces a ranked bar chart of all features with NA by pct missing
+
+
+#Credit to https://www.kaggle.com/captcalculator/a-very-extensive-sberbank-exploratory-analysis (Troy Walters)
+
+#check NA pct
+miss_pct <- 
+  map_dbl(rFrame, function(x) { round((sum(is.na(x)) / length(x)) * 100, 1) })
+
+miss_pct <- miss_pct[miss_pct > 0]
+
+#Plot missing features
+data.frame(miss=miss_pct, var=names(miss_pct), row.names=NULL) %>%
+  ggplot(aes(x=reorder(var, -miss), y=miss)) + 
+  geom_bar(stat='identity', fill='red') +
+  labs(x='', y='% missing', title='Percent missing data by feature') +
+  theme(axis.text.x=element_text(angle=90, hjust=1))
