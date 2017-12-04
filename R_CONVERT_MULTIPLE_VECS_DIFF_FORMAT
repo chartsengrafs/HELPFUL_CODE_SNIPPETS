@@ -1,0 +1,11 @@
+#I use this LAPPLY function alot when there are funky database issues that read the columns into R with the wrong format
+
+
+#Convert multiple colomns to factor
+f_cols<-c("A","B","C")
+dataframe[f_cols]<-lapply(dataframe[f_cols],factor)
+
+
+#Convert multiple columns to numeric
+num_cols<-c("D","E","F")
+dataframe[num_cols]<-lapply(dataframe[num_cols],as.numeric)
