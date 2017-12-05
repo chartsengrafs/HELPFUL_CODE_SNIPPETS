@@ -1,0 +1,34 @@
+
+
+#H2O is a multi threaded package in R (and Python) and extremely useful for modeling larger data sets
+
+library(h2o)
+#Just to be sure close any running H2O sessions
+h2o.shutdown(prompt=TRUE)
+
+#Initialize new H2O session
+localH2O = h2o.init(nthreads=-1, max_mem_size = "32G", ip="localhost", port = 54321)
+
+#Convert dataframe to h2O hex 
+model.hex<-as.h2o(model.data_frame)
+
+
+#Define your target (y) and any independent variable(s)- x
+x<- c(27:200)
+y<-26
+
+#exploratory GBM
+egbm<-h2o.gbm(x=x, y=y, train=model.hex)
+summary(egbm)
+
+
+#Check variable importance for most influential variables
+egbmvarimp<- h2o.varimp(egbm)
+#Convert to data frame
+egbmvarimp<-as.data.frame(egbmvarimp)
+
+#Create a vector of the top 20 variables
+top20<-egbmvarimp[1:20,1]
+
+#This vector can be plugged into other H2O models for extensive tuning
+top20
