@@ -1,0 +1,3 @@
+
+#Drop a list of vectors from a data frame 
+rFrame3 <- rFrame2[, !colnames(rFrame2) %in% f_cols]
