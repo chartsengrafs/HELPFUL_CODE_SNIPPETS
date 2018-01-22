@@ -1,0 +1,239 @@
+library(rnz)
+library(ggplot2)
+library(dplyr)
+library(purrr)
+library(h2o)
+library(caret)
+library(DataCombine)
+
+
+options(max.print=500)
+
+nzc()
+nzd()
+nzc()
+
+rFrame<-read_from_NZ_Query("SELECT * FROM EC_MEMR18MODEL_DEV_RANDSAMP")
+
+#Split train test
+trainIndex <- createDataPartition(rFrame$RESP, p = .8, 
+                                  list = FALSE, 
+                                  times = 1)
+
+
+
+
+str(rFrame, list.len=ncol(rFrame))
+
+rFrame$MAILED<-NULL
+rFrame$VERSION_CODE<-NULL
+
+
+#Factor columns
+f_cols<- c("OFFPRICE_3YR_D", "JAN_D", "FEB_D", "MAR_D", "APR_D", "MAY_D", "JUN_D", "JUL_D",  "AUG_D", "SEP_D",
+           "OCT_D", "NOV_D", "DEC_D", "MEMBER", "ONETIMEBUYER", "TWOTIMEBUYER", "CHANNEL", "OFFPRICE_YR1_D",
+           "OFFPRICE_YR2_D", "OFFPRICE_YR3_D", "FULLPRICE_YR3_D", 
+           "RESP", "DEM_HIGHEST_HHLD_EDUCATION")
+
+
+num_cols<-c("HHLD_KEY",
+            "ON_ORDS_YR1",
+            "RT_ORDS_YR1",
+            "TTL_ORDS_YR1",
+            "ON_ORDS_YR2",
+            "RT_ORDS_YR2",
+            "TTL_ORDS_YR2",
+            "ON_ORDS_YR3",
+            "RT_ORDS_YR3",
+            "TTL_ORDS_YR3",
+            "ON_ORDS_MNTH1",
+            "RT_ORDS_MNTH1",
+            "TTL_ORDS_MNTH1",
+            "ON_ORDS_MNTH2",
+            "RT_ORDS_MNTH2",
+            "TTL_ORDS_MNTH2",
+            "ON_ORDS_MNTH3",
+            "RT_ORDS_MNTH3",
+            "TTL_ORDS_MNTH3",
+            "ON_ORDS_MNTH4",
+            "RT_ORDS_MNTH4",
+            "TTL_ORDS_MNTH4",
+            "ON_ORDS_MNTH5",
+            "RT_ORDS_MNTH5",
+            "TTL_ORDS_MNTH5",
+            "ON_ORDS_MNTH6",
+            "RT_ORDS_MNTH6",
+            "TTL_ORDS_MNTH6",
+            "ON_ORDS_MNTH7",
+            "RT_ORDS_MNTH7",
+            "TTL_ORDS_MNTH7",
+            "ON_ORDS_MNTH8",
+            "RT_ORDS_MNTH8",
+            "TTL_ORDS_MNTH8",
+            "ON_ORDS_MNTH9",
+            "RT_ORDS_MNTH9",
+            "TTL_ORDS_MNTH9",
+            "ON_ORDS_MNTH10",
+            "RT_ORDS_MNTH10",
+            "TTL_ORDS_MNTH10",
+            "ON_ORDS_MNTH11",
+            "RT_ORDS_MNTH11",
+            "TTL_ORDS_MNTH11",
+            "ON_ORDS_MNTH12",
+            "RT_ORDS_MNTH12",
+            "TTL_ORDS_MNTH12",
+            "ON_ORDS_MNTH1_3YR",
+            "RT_ORDS_MNTH1_3YR",
+            "TTL_ORDS_MNTH1_3YR",
+            "ON_ORDS_MNTH2_3YR",
+            "RT_ORDS_MNTH2_3YR",
+            "TTL_ORDS_MNTH2_3YR",
+            "ON_ORDS_MNTH3_3YR",
+            "RT_ORDS_MNTH3_3YR",
+            "TTL_ORDS_MNTH3_3YR",
+            "ON_ORDS_MNTH4_3YR",
+            "RT_ORDS_MNTH4_3YR",
+            "TTL_ORDS_MNTH4_3YR",
+            "ON_ORDS_MNTH5_3YR",
+            "RT_ORDS_MNTH5_3YR",
+            "TTL_ORDS_MNTH5_3YR",
+            "ON_ORDS_MNTH6_3YR",
+            "RT_ORDS_MNTH6_3YR",
+            "TTL_ORDS_MNTH6_3YR",
+            "ON_ORDS_MNTH7_3YR",
+            "RT_ORDS_MNTH7_3YR",
+            "TTL_ORDS_MNTH7_3YR",
+            "ON_ORDS_MNTH8_3YR",
+            "RT_ORDS_MNTH8_3YR",
+            "TTL_ORDS_MNTH8_3YR",
+            "ON_ORDS_MNTH9_3YR",
+            "RT_ORDS_MNTH9_3YR",
+            "TTL_ORDS_MNTH9_3YR",
+            "ON_ORDS_MNTH10_3YR",
+            "RT_ORDS_MNTH10_3YR",
+            "TTL_ORDS_MNTH10_3YR",
+            "ON_ORDS_MNTH11_3YR",
+            "RT_ORDS_MNTH11_3YR",
+            "TTL_ORDS_MNTH11_3YR",
+            "ON_ORDS_MNTH12_3YR",
+            "RT_ORDS_MNTH12_3YR",
+            "TTL_ORDS_MNTH12_3YR",
+            "FULLPRICE_YR1_D",
+            "FULLPRICE_YR2_D",
+            "MEMBERMONTHS",
+            "TENURE_AS_CUST",
+            "E_WINTER_CL_ORDS_3YR",
+            "E_MEMBER_RE_ORDS_3YR",
+            "E_ANNIVERSA_ORDS_3YR",
+            "E_LABOR_DAY_SAL_ORDS_3YR",
+            "E_WINTER_SALE_O_ORDS_3YR",
+            "E_HOLIDAY_CLX_O_ORDS_3YR",
+            "E_JULY4_ORDS_3YR",
+            "E_NON_EVENT_ORDS_3YR",
+            "E_WINTER_CLX_OR_ORDS_1YR",
+            "E_MEMBER_REWARD_ORDS_1YR",
+            "E_ANNIVERSARY_O_ORDS_1YR",
+            "E_LABOR_DAY_SAL_ORDS_1YR",
+            "E_WINTER_SALE_O_ORDS_1YR",
+            "E_HOLIDAY_CLX_O_ORDS_1YR",
+            "E_JULY4_ORDS_1YR",
+            "E_NON_EVENT_ORDS_1YR",
+            "E_PRE_WINTER_CL_ORDS_3YR",
+            "E_PRE_MEMBER_RE_ORDS_3YR",
+            "E_PRE_ANNIVERSA_ORDS_3YR",
+            "E_PRE_LABOR_DAY_ORDS_3YR",
+            "E_PRE_WINTER_SA_ORDS_3YR",
+            "E_PRE_HOLIDAY_C_ORDS_3YR",
+            "E_PRE_JULY4_ORDS_3YR",
+            "E_PRE_MEMBER_RE_ORDS_1YR",
+            "E_PRE_ANNIVERSA_ORDS_1YR",
+            "E_PRE_LABOR_DAY_ORDS_1YR",
+            "E_PRE_WINTER_SA_ORDS_1YR",
+            "E_PRE_JULY4_ORDS_1YR")
+
+
+#Convert factor variables to factor format 
+rFrame[f_cols] <- lapply(rFrame[f_cols],factor)
+#Convert factor variables to factor format 
+rFrame[num_cols] <- lapply(rFrame[num_cols],as.numeric)
+
+
+#Dummy convert factor variables
+
+dmy2 <- dummyVars(" ~ .", data = rFrame[f_cols], fullRank=T)
+trsf2 <- data.frame(predict(dmy2, newdata = rFrame))
+
+#Combine dummies into original Frame
+rFrame2<-cbind(rFrame, trsf2)
+
+
+#Drop old factors
+rFrame3 <- rFrame2[, !colnames(rFrame2) %in% f_cols]
+rFrame3$MAILED<-NULL
+rFrame3$VERSION_CODE<-NULL
+
+
+str(rFrame3, list.len=ncol(rFrame3))
+colnames(rFrame3)
+
+summary(rFrame3$RESP.1)
+
+#Pre-processing
+
+nzv <- nearZeroVar(rFrame3, saveMetrics= TRUE)
+
+nzv_cols <- nearZeroVar(rFrame3)
+print(nzv, max.print=500)
+
+#remove ner zero variance predictors
+if(length(nzv) > 0) rFrame4 <-rFrame3[, -nzv_cols]
+
+
+
+#Center and scale - exclude certain columns
+
+rFrame_No_Transform <- subset(rFrame4, select = -c(HHLD_KEY, FULLPRICE_YR1_D, FULLPRICE_YR2_D, 
+                                                   OFFPRICE_3YR_D.1,  JAN_D.1,FEB_D.1,MAR_D.1,APR_D.1,MAY_D.1,    
+                                                   JUN_D.1, JUL_D.1,AUG_D.1,SEP_D.1,OCT_D.1,NOV_D.1,DEC_D.1,  
+                                                   ONETIMEBUYER.1,TWOTIMEBUYER.1, CHANNEL.MC, CHANNEL.RT,  
+                                                   OFFPRICE_YR1_D.1,OFFPRICE_YR2_D.1,OFFPRICE_YR3_D.1 ,
+                                                   FULLPRICE_YR3_D.1,RESP.1, DEM_HIGHEST_HHLD_EDUCATION.High.School.Graduate,
+                                                   DEM_HIGHEST_HHLD_EDUCATION.Some.College,DEM_HIGHEST_HHLD_EDUCATION.Unknown) )
+
+#Train teh preprocessing center and scale
+preProcValues <- preProcess(rFrame_No_Transform, method = c("center", "scale"))
+
+
+#Apply to the dataset 
+trainTransformed <- predict(preProcValues, rFrame4)
+
+
+
+head(trainTransformed)
+
+
+
+
+#Check for any missing values
+
+
+print(sapply(trainTransformed, function(x) sum(is.na(x))))
+
+
+
+
+
+#Split train and test 
+Train <- rFrame4[ trainIndex,]
+Test  <- rFrame4[-trainIndex,]
+
+
+
+
+
+
+
+
+
+
+
