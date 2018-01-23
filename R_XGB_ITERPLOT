@@ -1,0 +1,35 @@
+Train_Matrix<-data.matrix(Train)
+Test_Matrix<-data.matrix(Test)
+
+
+dtrain <- xgb.DMatrix(data = Train_Matrix, label = output_vector)
+dtest<-xgb.DMatrix(data =Test_Matrix, label = test_output_vector)
+
+
+#XGBoost
+#Set watch list to onsever train and test at the same time
+watchlist <- list(train=dtrain, test=dtest)
+
+bst <- xgb.train(data = dtrain, label = output_vector, max.depth = 8, verbose=1, eval_metric = "auc",
+               eta = 1, nthread = 35, watchlist=watchlist, nround = 200, objective = "binary:logistic")
+
+
+#Melt train and test so that test train/test can tracked over iteration
+train_auc<-as.data.frame(bst$evaluation_log$train_auc)
+train_auc$label<-"Train"
+colnames(train_auc)<-c("AUC", "LABEL")
+
+test_auc<-as.data.frame(bst$evaluation_log$test_auc)
+test_auc$label<-"Test"
+colnames(test_auc)<-c("AUC", "LABEL")
+
+#Stack test and train AUC lenghtwise
+AUC<-rbind(test_auc, train_auc)
+
+#Create enumartion var by group
+AUC2<-AUC %>% group_by(LABEL) %>% mutate(iter = row_number())
+
+
+#Plot test v train UAC
+AUC2 %>% 
+    ggvis(~iter, ~AUC,  fill:='plum', fillOpacity:=.5) 
