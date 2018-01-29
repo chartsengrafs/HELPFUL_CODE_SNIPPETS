@@ -1,0 +1,16 @@
+
+## Aggregate the test frame with 1-PRED (pred2 in this case). 
+
+
+aggregated<-Test%>% 
+  mutate(decile=ntile(pred2,10)) %>%
+    group_by(decile) %>%
+      summarise(sum_resp=sum(RESP)) %>%
+        mutate(cum_resp = cumsum(sum_resp)) %>%
+          mutate(cum_pct = cum_resp/nrow(Test[Test$RESP==1,])) %>%
+           mutate(baseline = seq(0.1,1,by=0.1))
+           
+           
+aggregated%>% 
+ ggplot(aes(x=decile)) + geom_line(aes(y=cum_pct),color="blue") +
+  geom_line(aes(y=baseline),color="black")
