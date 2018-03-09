@@ -1,0 +1,9 @@
+
+check <-function(x,y) {
+  lx <-levels(x)
+  ly<-levels(y)
+  print(lx %in% ly)
+  print(ly %in% lx)
+}
+
+check(x,y)
