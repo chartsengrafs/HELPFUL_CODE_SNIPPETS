@@ -1,0 +1,19 @@
+#Randomly samples a list of unknown length
+#The n+1th item has a k/(n+1) chance of being kept
+#O(n) complexity
+
+import random
+def random_subset( iterator, K ):
+    result = []
+    N = 0
+
+    for item in iterator:
+        N += 1
+        if len( result ) < K:
+            result.append( item )
+        else:
+            s = int(random.random() * N)
+            if s < K:
+                result[ s ] = item
+
+    return result
