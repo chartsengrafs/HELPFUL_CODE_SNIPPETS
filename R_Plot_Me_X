@@ -1,0 +1,81 @@
+PlotMeX <- function(dataframe, xwhich, ywhich, plottype = "side"){
+  # error checking
+  if (!require(ggplot2)) {
+    stop("Can't continue can't load ggplot2")
+  }
+  theme_set(theme_bw())
+  if (!require(dplyr)) {
+    stop("Can't continue can't load dplyr")
+  }
+  if (length(match.call()) <= 3) {
+    stop("Not enough arguments passed... requires a dataframe, plus at least two variables")
+  }
+  argList <-  as.list(match.call()[-1])
+  if (!exists(deparse(substitute(dataframe)))) {
+    stop("The first object in your list does not exist. It should be a dataframe")
+  }
+  if (!is(dataframe, "data.frame")) {
+    stop("The first name you passed does not appear to be a data frame")
+  }
+  switch(plottype,
+         side =  list(geom_bar(position="dodge", stat="identity"),
+                      ylab("Count")) -> whichbar,
+         stack = list(geom_bar(stat="identity"),
+                      ylab("Count")) -> whichbar,
+         percent = list(geom_bar(stat="identity", position="fill"),
+                        ylab("Percent")) -> whichbar
+  )
+  # If both variables are found in the dataframe immediately print the plot
+  if (deparse(substitute(xwhich)) %in% names(dataframe) & deparse(substitute(ywhich)) %in% names(dataframe)) {
+    aaa <- enquo(xwhich)
+    bbb <- enquo(ywhich)
+    xname <- deparse(substitute(xwhich))
+    yname <- deparse(substitute(ywhich))
+    dfname <- deparse(substitute(dataframe))
+    dataframe %>%
+      filter(!is.na(!! aaa), !is.na(!! bbb))  %>%
+      mutate(!!quo_name(aaa) := factor(!!aaa), !!quo_name(bbb) := factor(!!bbb)) %>%
+      group_by(!! aaa,!! bbb) %>%
+      count() -> tempdf
+    tempdf %>%
+      ggplot(aes_(fill=aaa, y=~n, x=bbb)) +
+      whichbar +
+      ggtitle(bquote("Crosstabs dataset: "*.(dfname)*" variables "*.(xname)~"by "*.(yname))) -> p
+    return(p)
+  }
+  # If the user has given us integers indicating the column numbers rather than bare variable names
+  # we need to build a list of what is to be plotted and then do the plotting
+  # Build two lists
+  indvars<-list() # create empty list to add to
+  depvars<-list() # create empty list to add to
+  totalcombos <- 1 # keep track of where we are
+  message("Creating the variable pairings...")
+  for (j in seq_along(xwhich)) {
+    for (k in seq_along(ywhich)) {
+      depvarsbare <- as.name(colnames(dataframe[xwhich[[j]]]))
+      indvarsbare <- as.name(colnames(dataframe[ywhich[[k]]]))
+      cat("Pairing #", totalcombos, " ", as.name(colnames(dataframe[xwhich[[j]]])),
+          " with ", as.name(colnames(dataframe[ywhich[[k]]])), "\n", sep = "")
+      aaa <- enquo(depvarsbare)
+      bbb <- enquo(indvarsbare)
+      xname <- deparse(substitute(depvarsbare))
+      yname <- deparse(substitute(indvarsbare))
+      dfname <- deparse(substitute(dataframe))
+      dataframe %>%
+        filter(!is.na(!! aaa), !is.na(!! bbb))  %>%
+        mutate(!!quo_name(aaa) := factor(!!aaa), !!quo_name(bbb) := factor(!!bbb)) %>%
+        group_by(!! aaa,!! bbb) %>%
+        count() -> tempdf
+      tempdf %>%
+        ggplot(aes_(fill=aaa, y=~n, x=bbb)) +
+        whichbar +
+        ggtitle(bquote("Crosstabs dataset: "*.(dfname)*" variables "*.(xname)~"by "*.(yname))) -> p
+      print(p)
+      totalcombos <- totalcombos +1
+    }
+  }
+  return(argList)
+}
+
+
+PlotMeX(mtcars, vs, cyl)
