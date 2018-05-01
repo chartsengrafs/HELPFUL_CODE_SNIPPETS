@@ -1,0 +1,13 @@
+
+#Coin flip monte carlo simulator my friend Ronak Tali wrote for me when I was making a big life choice
+sample.space <- c(0,1)
+theta <- 0.5 # this is a fair coin
+N <- 1000 # we want to flip a coin 20 times
+flips <- sample(sample.space, 
+                size = N, 
+                replace = TRUE, 
+                prob = c(theta, 1 - theta))
+
+print(paste0("#HEADS - Life Choice 1      :     ",length(which(flips > 0))))
+
+print(paste0("#TAILS - Life Choice 2          :     ",length(which(flips < 1))))
