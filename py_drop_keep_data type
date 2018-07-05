@@ -1,0 +1,12 @@
+Drops or keeps pandas data frame columns of a specific data type 
+
+import pandas as pd 
+#Exclude
+df.select_dtypes(exclude=['int'])
+#Keep 
+df.select_dtypes(include=['float64'])
+
+
+Credit to: 
+
+https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.select_dtypes.html
