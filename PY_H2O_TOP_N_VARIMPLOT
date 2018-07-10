@@ -1,0 +1,22 @@
+
+
+#Modifies an unmanageably large variable importance plot harvested from an H2o model JSON
+
+plt.rcdefaults()
+fig, ax = plt.subplots()
+
+variables =gbm._model_json['output']['variable_importances']['variable']
+variables_n =variables[ 0:20]
+
+y_pos = np.arange(len(variables_n))
+
+scaled_importance = gbm._model_json['output']['variable_importances']['scaled_importance']
+scaled_importance_n = scaled_importance[0:20]
+ax.barh(y_pos, scaled_importance_n, align='center', color='blue', ecolor='black')
+
+ax.set_yticks(y_pos)
+ax.set_yticklabels(variables_n)
+ax.invert_yaxis()
+ax.set_xlabel('Scaled Importance')
+ax.set_title('Variable Importance')
+plt.show()
