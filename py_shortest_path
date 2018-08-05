@@ -1,6 +1,7 @@
 #Network analysis algorithm for finsing shortest path
 #Credit : Eric Ma via Data Camp 'Network Analysis in Python'
 
+#Effectively measures highly connected nodes in a graph
 
 
 def path_exists(G, node1, node2):
