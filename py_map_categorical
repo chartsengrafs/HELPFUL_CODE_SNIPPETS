@@ -1,0 +1,15 @@
+# Create a categorical variable by defining then applying a function in pandas
+
+def func(row):
+    if (row <= 30):
+        return '0-30'
+    elif (row > 30) and (row <=60 ):
+        return '30-60' 
+    elif (row > 60) and (row <=90 ):
+        return '60-90' 
+    elif (row > 90):
+        return '90+' 
+    else:
+        return 'ERROR'
+    
+df['bin'] = combined['variable'].map(func)
