@@ -1,8 +1,12 @@
-#Functions
-def top_most_common (df, num):
+#Creates my beloved PROC FREQ in Python Pandas
+def freq (df):
     from collections import Counter
-    #Count the categories
+    #Count the discrete values
     type_count = Counter(df)
-    # Find the n most common elements
-    print(pd.DataFrame(type_count.most_common(num),  
-                       columns=['Category', 'Frequency']))
+    # Find the count of alldiscrete elements 
+    j=pd.DataFrame(type_count.most_common(len(df)),  
+                       columns=['discrete_value', 'frequency'])
+    j['percent'] = 100*j.frequency/j.frequency.sum() 
+    j['cumulative_frequency'] = j.frequency.cumsum()
+    j['cumulative_percent'] = j.cumulative_frequency/j.frequency.sum()
+    return j 
