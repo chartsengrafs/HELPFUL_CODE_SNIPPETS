@@ -1,9 +1,8 @@
-#Continues my quest to recreate PROC FREQ. Pass a vector and the number of rankings you want to see
-
+#Functions
 def top_most_common (df, num):
     from collections import Counter
-    #Count the unqiue values of the element
+    #Count the categories
     type_count = Counter(df)
     # Find the n most common elements
-    print(type_count.most_common(num))
-    
+    print(pd.DataFrame(type_count.most_common(num),  
+                       columns=['Category', 'Frequency']))
