@@ -1,3 +1,6 @@
+
+from collections import Counter
+
 #Creates my beloved PROC FREQ in Python Pandas
 def freq (df):
     from collections import Counter
