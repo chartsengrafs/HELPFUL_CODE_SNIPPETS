@@ -10,3 +10,21 @@ def freq (df):
     j['cumulative_frequency'] = j.frequency.cumsum()
     j['cumulative_percent'] = j.cumulative_frequency/j.frequency.sum()
     return j 
+
+#Iterates the FREQ function through multiple data frames
+def freq_iter(df, cols):
+    dflist = []
+    for i in cols:
+        series = df[i]
+        #Count the discrete values
+        type_count = [[k,v] for k,v in Counter(series).items()]
+        # Find the count of all discrete elements 
+        j=pd.DataFrame.from_records(type_count, 
+                                    index=range(len(type_count)), 
+                                    columns=['value','frequency'])
+        j['percent'] = j.frequency/j.frequency.sum() 
+        j['cumulative_frequency'] = j.frequency.cumsum()
+        j['cumulative_percent'] = j.cumulative_frequency/j.frequency.sum()
+        j.columns = [series.name + '_' + i for i in j.columns]
+        dflist.append(j)
+    return dflist
