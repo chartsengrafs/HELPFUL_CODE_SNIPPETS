@@ -1,5 +1,6 @@
  
  #This function drops columns from a pandas dataframe
  # based on aggregated Boollean conditionals 
- 
- df[df.columns[df.max() > 0]]
+
+def filter_columns (df,agg, numeric_conditional):
+    df[df.columns[df.aggregate(agg) > numeric_conditional]]
