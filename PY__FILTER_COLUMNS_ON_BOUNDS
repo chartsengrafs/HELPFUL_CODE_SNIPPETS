@@ -1,0 +1,5 @@
+ 
+ #This function drops columns from a pandas dataframe
+ # based on aggregated Boollean conditionals 
+ 
+ df[df.columns[df.max() > 0]]
