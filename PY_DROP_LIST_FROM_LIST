@@ -1,0 +1,6 @@
+#This drops the values in one list that are contained in another
+#Essentially it is "If in B then drop from A"
+#Helpful for filtering out lists of columnc from a larger list of oclumns
+
+
+new_list =  [x for x in a_list if x not in b_list]
