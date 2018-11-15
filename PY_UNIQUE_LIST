@@ -5,3 +5,11 @@ unique_vals=data.column.unique().tolist()
 #Or figure out list of duplicates
 import collections
 print ([item for item, count in collections.Counter(independent_vars).items() if count > 1])
+
+
+#Or drop duplicate columns in a pandas 
+Cols = list(pdf.columns)
+for i,item in enumerate(pdf.columns):
+    if item in pdf.columns[:i]: Cols[i] = "toDROP"
+pdf.columns = Cols
+pdf = pdf.drop("toDROP",1)
