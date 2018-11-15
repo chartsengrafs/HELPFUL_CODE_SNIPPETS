@@ -1,3 +1,7 @@
 #Create a list of unique values from a column
 
 unique_vals=data.column.unique().tolist()
+
+#Or figure out list of duplicates
+import collections
+print ([item for item, count in collections.Counter(independent_vars).items() if count > 1])
