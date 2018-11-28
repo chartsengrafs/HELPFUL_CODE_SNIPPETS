@@ -1,0 +1,6 @@
+# need this little line of code to accelerate writing panadas data frame as a Spark table
+
+
+#Convert feature engineered df to Spark object
+spark.conf.set("spark.sql.execution.arrow.enabled", "true")
+spark_df = spark.createDataFrame(df)
