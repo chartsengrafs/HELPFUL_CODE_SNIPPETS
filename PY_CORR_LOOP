@@ -1,0 +1,21 @@
+## Loops correlation through list of columns
+
+# Name and value of col with max corr
+corr_max = 0
+corr_max_col = columns[0]
+
+# Loop to check all columns contained in list
+for col in columns:
+    # Check the correlation of a pair of columns
+    corr_val = df.corr('SALESCLOSEPRICE', col)
+    # Logic to compare corr_max with current corr_val
+    if corr_val > corr_max:
+        # Update the column name and corr value
+        corr_max = corr_val
+        corr_max_col = col
+
+print(corr_max_col)
+
+
+##Source: DataCamp - Feature Engineering With Pyspark
+#https://campus.datacamp.com/courses/feature-engineering-with-pyspark/data-exploration?ex=1
