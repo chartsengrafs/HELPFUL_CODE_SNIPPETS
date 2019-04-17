@@ -1,0 +1,12 @@
+path = "...." # use your path
+all_files = glob.glob(path + "/*.csv")
+
+li = []
+
+for filename in all_files:
+    df = pd.read_csv(filename, index_col=None, header=0, na_values = ['NULL'], keep_default_na = False)
+    li.append(df)
+
+frame = pd.concat(li, axis=0, ignore_index=True)
+
+#citation - https://stackoverflow.com/questions/20906474/import-multiple-csv-files-into-pandas-and-concatenate-into-one-dataframe
