@@ -1,0 +1,4 @@
+dfs = [x1, x2, x2, x3]
+df = reduce(lambda x, y : pd.merge(x, y, how = 'left', on = ['field']), dfs)
+
+#thanks nick fusaro 
