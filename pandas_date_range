@@ -1,0 +1,6 @@
+#returns pandas dataframe with a column of days ranging from start_date to end_date
+def pd_date_range(start_date,end_date):
+    date_list = pd.date_range(start_date, end_date).tolist()
+    date_frame = pd.DataFrame(date_list, columns=['calendar_date'])
+    date_frame.sort_values('calendar_date')
+    return date_frame
