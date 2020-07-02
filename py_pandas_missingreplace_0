@@ -1,0 +1,12 @@
+def zero_replace (df, zero_replace_list):
+    """
+        Replace designated list of fields with zero replace
+
+        Args:
+            df (Pandas dataframe)
+            zero_replace_list - a list of fields that you want to replace missings with 0's
+
+        Returns: A dataframe designated fields transformed
+    """
+    df[zero_replace_list] = df[zero_replace_list].fillna(0)
+    return df
