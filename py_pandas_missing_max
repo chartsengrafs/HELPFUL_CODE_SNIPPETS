@@ -1,0 +1,13 @@
+def max_replace (df, list_to_replace):
+    """
+        Replaces missing values with max of column
+  
+        Args:
+            df (Pandas dataframe)
+            max_list (list)
+        Returns: A dataframe with designated columns transformed to replace NULL with max`
+    """
+    for i,j in enumerate(list_to_replace):
+      temp = df[j].max()
+      df[j] = df[j].fillna(temp)
+    return df
