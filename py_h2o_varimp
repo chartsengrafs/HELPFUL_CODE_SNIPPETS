@@ -1,0 +1,7 @@
+def varimp_df (model, n):
+  variables = model._model_json['output']['variable_importances']['variable']
+  scaled_importance = model._model_json['output']['variable_importances']['scaled_importance']
+  percentage  = model._model_json['output']['variable_importances']['percentage']
+  data_tuples = list(zip(variables,scaled_importance, percentage))
+  varimport = pd.DataFrame(data_tuples, columns=['Variable','Scaled_Importance', 'Percentage'])
+  return varimport.head(n=n)
