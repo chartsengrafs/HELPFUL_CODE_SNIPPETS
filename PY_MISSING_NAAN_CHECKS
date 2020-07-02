@@ -1,16 +1,16 @@
-# Select the 'age' and 'cabin' columns: df
-columns=['age', 'cabin']
-df = titanic[columns]
+def missing_check (df):
+    """
+     Returns a single column Pandas DataFrame lat displays all columns
+     with % missing greater than 0 
 
-# Print the shape of df
-print(df.shape)
+     Args:
+        df (Pandas dataframe): Dataframe of interest
+       
+      
 
-# Drop rows in df with how='any' and print the shape
-print(df.dropna(how='any').shape)
+     Returns: A sorted dataframe displaying columns with missing values
 
-# Drop rows in df with how='all' and print the shape
-print(df.dropna(how='all').shape)
-
-# Call .dropna() with thresh=1000 and axis='columns' and print the output of .info() from titanic
-print(titanic.dropna(thresh=1000, axis='columns').info())
-
+     """
+    missing = pd.DataFrame(100 * df.isnull().sum() /len(df))
+    missing['pct_missing']=missing[0]
+    return missing[missing['pct_missing']>0].sort_values(by="pct_missing", ascending=False).drop([missing.columns[0]], axis='columns')
