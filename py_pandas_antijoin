@@ -1,0 +1,46 @@
+def anti_join(df1, df2, on=None, left_on=None, right_on=None,
+              index=False, left_index=False, right_index=False):
+    """
+    Selects entries from df1 that are not in df2, indexing by your choice of
+    columns and indices from the right and left.
+
+    Args:
+        df1 (Pandas dataframe): Left dataframe.
+        df2 (Pandas dataframe): Right dataframe.
+        on (String): Columns if using the same one on both
+        left_on (String): Left column if using a different one on each)
+        right_on (String): Left column if using a different one on each
+        index (Boolean): Whether or not to perform the antijoin on both index.
+        left_index (Boolean): Whether to join on the left index.
+        right_index (Boolean): Whether to join on the left index.
+
+    Returns: A dataframe with the relevant entries removed.
+
+    """
+    if left_on and right_on:
+        left = df1[left_on]
+        right = df2[right_on]
+
+    elif left_on and right_index:
+        left = df1[left_on]
+        right = df2.index
+
+    elif left_index and right_on:
+        left = df1.index
+        right = df2[right_on]
+
+    elif left_index and right_index:
+        left = df1.index
+        right = df2.index
+
+    elif on:
+        left = df1[on]
+        right = df2[on]
+
+    elif index:
+        left = df1.index
+        right = df2.index
+    else:
+        raise KeyError("Join on something!")
+
+    return df1[~left.isin(right)]
